@@ -45,12 +45,12 @@ fig, ax = plt.subplots()
 if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, marker='o')
+    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Hora')
     x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, marker='o')
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Fecha')
     ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
