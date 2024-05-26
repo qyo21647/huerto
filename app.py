@@ -3,12 +3,23 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+import time
 
 from añadir_datos import obtener_datos
 
-# Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
-obtener_datos()
+# Función para cargar datos con animación de carga
+def cargar_datos():
+    with st.spinner('Cargando datos...'):
+        # Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
+        obtener_datos()
+        # Simulación de carga de datos (aquí podrías cargar tus datos reales)
+        time.sleep(3)
+    st.success('¡Datos cargados correctamente!')
 
+# Llamada a la función para cargar los datos
+cargar_datos()
+
+# Obtener los datos actualizados
 df_datos_completo = st.session_state['df_datos_completo']
 
 # Excluir la columna de fecha y obtener los nombres de las columnas restantes
