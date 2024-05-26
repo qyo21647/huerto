@@ -75,6 +75,10 @@ with st.spinner('Cargando gráfico...'):
     # Agregar leyenda
     plt.legend([columna_seleccionada])
 
+    # Añadir gradiente de color en función del eje Y
+    gradient = np.linspace(0, 1, 256).reshape(1, -1)
+    ax.imshow([gradient], aspect='auto', cmap=plt.cm.Blues, extent=ax.get_ylim())
+
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
 
