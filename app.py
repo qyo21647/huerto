@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import subprocess
 
+st.title("Estación meteorológica")
+
 # Usar seaborn para el estilo
 sns.set(style="darkgrid")
 
