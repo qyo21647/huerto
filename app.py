@@ -4,7 +4,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import time  # Para simular la carga
-import numpy as np  # Importa numpy para utilizar funciones como np.linspace
 
 from añadir_datos import obtener_datos
 
@@ -66,18 +65,6 @@ with st.spinner('Cargando gráfico...'):
         sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
         ax.set_xlabel('Fecha')
         ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
-
-    # Obtener los valores mínimo y máximo del eje Y
-    y_min = datos_visualizacion[columna_seleccionada].min()
-    y_max = datos_visualizacion[columna_seleccionada].max()
-
-    # Crear el gradiente
-    cmap = plt.get_cmap('viridis')
-    colors = cmap(np.linspace(0, 1, 100))
-    gradient = np.tile(np.linspace(y_min, y_max, 100), (1, 1)).T
-
-    # Dibujar el gradiente
-    ax.imshow(gradient, aspect='auto', cmap=cmap, extent=(ax.get_xlim()[0], ax.get_xlim()[1], y_min, y_max))
 
     ax.set_ylabel(columna_seleccionada)
     ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
