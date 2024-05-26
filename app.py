@@ -77,8 +77,11 @@ with st.spinner('Cargando gráfico...'):
     plt.legend([columna_seleccionada])
 
     # Agregar gradiente de color en función del eje y
-    gradient = np.linspace(0, 1, 256).reshape(1, -1)
-    ax.imshow(gradient, aspect='auto', cmap=plt.cm.Blues, extent=ax.get_ylim())
+    ax.set_facecolor('lightgray')  # Establecer el color de fondo del gráfico
+    cmap = plt.get_cmap('Blues')  # Obtener el mapa de colores
+    gradient = np.linspace(0, 1, 256)  # Crear un gradiente de color
+    gradient = np.vstack((gradient, gradient))  # Apilar el gradiente verticalmente
+    ax.imshow(gradient, aspect='auto', cmap=cmap, extent=[0, 1, ax.get_ylim()[0], ax.get_ylim()[1]], alpha=0.5)
 
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
