@@ -17,14 +17,14 @@ nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 
 # Definir colores para cada tipo de dato
 colores = {
-    'Temperatura': 'red',
-    'Humedad': 'blue',
-    'Intensidad de la luz': 'yellow',
+    'Temperatura': '#ee8341',
+    'Humedad': '#4173ee',
+    'Intensidad de la luz': '#f5f560',
     'Presión': 'orange',
     'Dirección del viento': 'brown',
     'Velocidad del viento': '#bbfff4',
     'Lluvia a la hora': 'gray',
-    'Índice UV': 'cyan'
+    'Índice UV': '#7bb73f'
 }
 
 # Opción para seleccionar qué columna graficar
