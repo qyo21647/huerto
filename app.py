@@ -32,6 +32,10 @@ datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
+
+# Agregar un título más llamativo y colorido
+st.title("<h1 style='text-align: center; color: green;'>Monitor de Mediciones</h1>", unsafe_allow_html=True)
+st.markdown(f"<h2 style='text-align: center;'>ráfico de {columna_seleccionada} - {opcion_visualizacion}</h2>", unsafe_allow_html=True)
 fig, ax = plt.subplots()
 
 # Verificar si la opción de visualización es para el día actual
