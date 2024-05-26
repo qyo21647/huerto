@@ -3,7 +3,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-import numpy as np
 
 from añadir_datos import obtener_datos
 
@@ -44,13 +43,14 @@ if opcion_visualizacion == 'Día actual':
     x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette='viridis')
 
-    # Ajustar el color de la línea según los valores de los datos
-    cmap = sns.color_palette("viridis", as_cmap=True)
-    norm = plt.Normalize(datos_visualizacion[columna_seleccionada].min(), datos_visualizacion[columna_seleccionada].max())
+    # Escalar la transparencia de la línea en función de los valores de los datos
+    min_value = datos_visualizacion[columna_seleccionada].min()
+    max_value = datos_visualizacion[columna_seleccionada].max()
+    alpha = (datos_visualizacion[columna_seleccionada] - min_value) / (max_value - min_value)
     line_collection = ax.collections[0]
-    line_collection.set_color(cmap(norm(datos_visualizacion[columna_seleccionada])))
+    line_collection.set_alpha(alpha)
 
     ax.set_xlabel('Fecha')
     ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
