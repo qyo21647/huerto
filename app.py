@@ -72,9 +72,6 @@ with st.spinner('Cargando gráfico...'):
     plt.grid(True)  # Añadir líneas de cuadrícula
     plt.tight_layout()
 
-    # Agregar leyenda
-    plt.legend([columna_seleccionada])
-
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
 
