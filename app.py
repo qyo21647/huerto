@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+import time  # Para simular la carga
 
 from añadir_datos import obtener_datos
 
@@ -32,28 +33,38 @@ datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
-fig, ax = plt.subplots()
 
-# Verificar si la opción de visualización es para el día actual
-if opcion_visualizacion == 'Día actual':
-    datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
-    datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
-    ax.set_xlabel('Hora')
-    x_ticks = datos_visualizacion['Hora'].iloc[::12]
-    ax.set_xticks(x_ticks)
-else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
-    ax.set_xlabel('Fecha')
-    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
+# Añadir animación de carga
+with st.spinner('Cargando gráfico...'):
+    # Simular una carga
+    time.sleep(2)
 
-ax.set_ylabel(columna_seleccionada)
-ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
-plt.xticks(rotation=45)
-plt.tight_layout()
+    fig, ax = plt.subplots()
 
-# Mostrar la gráfica en Streamlit
-st.pyplot(fig)
+    # Verificar si la opción de visualización es para el día actual
+    if opcion_visualizacion == 'Día actual':
+        datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
+        datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
+        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color='blue')
+        ax.set_xlabel('Hora')
+        x_ticks = datos_visualizacion['Hora'].iloc[::12]
+        ax.set_xticks(x_ticks)
+    else:
+        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color='blue')
+        ax.set_xlabel('Fecha')
+        ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
+
+    ax.set_ylabel(columna_seleccionada)
+    ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
+    plt.xticks(rotation=45)
+    plt.grid(True)  # Añadir líneas de cuadrícula
+    plt.tight_layout()
+
+    # Agregar leyenda
+    plt.legend([columna_seleccionada])
+
+    # Mostrar la gráfica en Streamlit
+    st.pyplot(fig)
 
 # Descripción del proyecto
 st.markdown("""
