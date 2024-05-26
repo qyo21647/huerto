@@ -64,3 +64,4 @@ st.markdown("""
 ## Descripción del Proyecto
 
 Este proyecto proporciona una herramienta interactiva para visualizar y analizar datos meteorológicos. Los usuarios pueden seleccionar diferentes columnas de datos y períodos de tiempo para generar gráficos personalizados. La aplicación también ofrece opciones de
+""")
