@@ -52,8 +52,13 @@ def update(frame):
 # Ejecutar la animación
 ani = FuncAnimation(fig, update, frames=len(datos_visualizacion), init_func=init, blit=True)
 
-# Mostrar la animación en Streamlit
-st.pyplot(fig)
+# Guardar la animación como un archivo de video
+video_file = "animation.mp4"
+ani.save(video_file)
+
+# Mostrar el video en Streamlit
+video_bytes = open(video_file, "rb").read()
+st.video(video_bytes)
 
 # Descripción del proyecto
 st.markdown("""
