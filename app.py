@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import subprocess
 
-st.title("Estación Meteorológica", height=50, color="blue", align="center", font_weight="bold", font_style="italic", font_family="Arial")
+st.markdown("<h1 style='text-align: center; color: blue; font-weight: bold; font-style: italic; font-family: Arial;'>Monitor de Mediciones</h1>", unsafe_allow_html=True)
 
 # Usar seaborn para el estilo
 sns.set(style="darkgrid")
