@@ -15,6 +15,18 @@ df_datos_completo = st.session_state['df_datos_completo']
 # Excluir la columna de fecha y obtener los nombres de las columnas restantes
 nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 
+# Definir colores para cada tipo de dato
+colores = {
+    'Temperatura': 'red',
+    'Humedad': 'blue',
+    'Intensidad de la luz': 'green',
+    'Presión': 'orange',
+    'Dirección del viento': 'purple',
+    'Velocidad del viento': 'brown',
+    'Lluvia a la hora': 'gray',
+    'Índice UV': 'cyan'
+}
+
 # Opción para seleccionar qué columna graficar
 columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", nombres_columnas)
 
@@ -45,12 +57,12 @@ with st.spinner('Cargando gráfico...'):
     if opcion_visualizacion == 'Día actual':
         datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
         datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color='blue')
+        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
         ax.set_xlabel('Hora')
         x_ticks = datos_visualizacion['Hora'].iloc[::12]
         ax.set_xticks(x_ticks)
     else:
-        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color='blue')
+        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
         ax.set_xlabel('Fecha')
         ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
