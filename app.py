@@ -2,9 +2,8 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize
 from datetime import datetime, timedelta
-import time  # Para simular la carga
+import numpy as np
 
 from añadir_datos import obtener_datos
 
@@ -19,18 +18,6 @@ nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 # Opción para seleccionar qué columna graficar
 columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", nombres_columnas)
 
-# Definir colores para cada tipo de dato
-colores = {
-    'Temperatura': 'Reds',
-    'Humedad': 'Blues',
-    'Intensidad de la luz': 'Greens',
-    'Presión': 'Oranges',
-    'Dirección del viento': 'Purples',
-    'Velocidad del viento': 'copper',
-    'Lluvia a la hora': 'gray',
-    'Índice UV': 'cividis'
-}
-
 # Opciones de visualización
 opciones_visualizacion = {
     'Todos los tiempos': df_datos_completo,
@@ -44,43 +31,37 @@ opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualizac
 # Obtener los datos para la opción seleccionada
 datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
-# Normalizar los datos para ajustar al rango de colores
-norm = Normalize(vmin=datos_visualizacion[columna_seleccionada].min(), vmax=datos_visualizacion[columna_seleccionada].max())
-
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
+fig, ax = plt.subplots()
 
-# Añadir animación de carga
-with st.spinner('Cargando gráfico...'):
-    # Simular una carga
-    time.sleep(2)
+# Verificar si la opción de visualización es para el día actual
+if opcion_visualizacion == 'Día actual':
+    datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
+    datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
+    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    ax.set_xlabel('Hora')
+    x_ticks = datos_visualizacion['Hora'].iloc[::12]
+    ax.set_xticks(x_ticks)
+else:
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
 
-    fig, ax = plt.subplots()
+    # Ajustar el color de la línea según los valores de los datos
+    cmap = sns.color_palette("viridis", as_cmap=True)
+    norm = plt.Normalize(datos_visualizacion[columna_seleccionada].min(), datos_visualizacion[columna_seleccionada].max())
+    line_collection = ax.collections[0]
+    line_collection.set_color(cmap(norm(datos_visualizacion[columna_seleccionada])))
 
-    # Verificar si la opción de visualización es para el día actual
-    if opcion_visualizacion == 'Día actual':
-        datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
-        datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette=colores[columna_seleccionada], hue_norm=norm)
-        ax.set_xlabel('Hora')
-        x_ticks = datos_visualizacion['Hora'].iloc[::12]
-        ax.set_xticks(x_ticks)
-    else:
-        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette=colores[columna_seleccionada], hue_norm=norm)
-        ax.set_xlabel('Fecha')
-        ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
+    ax.set_xlabel('Fecha')
+    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
-    ax.set_ylabel(columna_seleccionada)
-    ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
-    plt.xticks(rotation=45)
-    plt.grid(True)  # Añadir líneas de cuadrícula
-    plt.tight_layout()
+ax.set_ylabel(columna_seleccionada)
+ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
+plt.xticks(rotation=45)
+plt.tight_layout()
 
-    # Agregar leyenda
-    plt.legend([columna_seleccionada])
-
-    # Mostrar la gráfica en Streamlit
-    st.pyplot(fig)
+# Mostrar la gráfica en Streamlit
+st.pyplot(fig)
 
 # Descripción del proyecto
 st.markdown("""
