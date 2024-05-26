@@ -43,6 +43,9 @@ opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualizac
 # Obtener los datos para la opción seleccionada
 datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
+# Título principal
+st.title("Estación Meteorológica")
+
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
 
