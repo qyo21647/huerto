@@ -1,38 +1,28 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-import subprocess
 
-st.markdown("<h1 style='text-align: center; color: #33ffd1; font-weight: bold; font-family: Arial;'>Estación Meteorológica</h1>", unsafe_allow_html=True)
+from añadir_datos import obtener_datos
 
-# Usar seaborn para el estilo
-sns.set(style="darkgrid")
+# Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
+obtener_datos()
 
-# Ejecutar añadir_datos.py
-subprocess.run(["python", "añadir_datos.py"])  # este .py añade los datos nuevos al CSV
-
-# Cargar los datos desde el archivo CSV
-file_path = "mediciones.csv"
-data = pd.read_csv(file_path)
-
-# Convertir la columna 'Fecha' a datetime
-data['Fecha'] = pd.to_datetime(data['Fecha'])
+df_datos_completo = st.session_state['df_datos_completo']
 
 # Excluir la columna de fecha y obtener los nombres de las columnas restantes
-nombres_columnas = [col for col in data.columns if col != 'Fecha']
+nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 
 # Opción para seleccionar qué columna graficar
 columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", nombres_columnas)
 
 # Opciones de visualización
 opciones_visualizacion = {
-    'Todos los tiempos': data,
-    'Últimos 30 días': data[data['Fecha'] >= datetime.now() - timedelta(days=30)],
-    'Mes actual': data[data['Fecha'].dt.month == datetime.now().month],
-    'Últimos 7 días': data[data['Fecha'] >= datetime.now() - timedelta(days=7)],
-    'Día actual': data[data['Fecha'].dt.date == datetime.now().date()]
+    'Todos los tiempos': df_datos_completo,
+    'Últimos 30 días': df_datos_completo[df_datos_completo['Fecha'] >= datetime.now() - timedelta(days=30)],
+    'Mes actual': df_datos_completo[df_datos_completo['Fecha'].dt.month == datetime.now().month],
+    'Últimos 7 días': df_datos_completo[df_datos_completo['Fecha'] >= datetime.now() - timedelta(days=7)],
+    'Día actual': df_datos_completo[df_datos_completo['Fecha'].dt.date == datetime.now().date()]
 }
 opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualización:", list(opciones_visualizacion.keys()))
 
@@ -45,25 +35,33 @@ fig, ax = plt.subplots()
 
 # Verificar si la opción de visualización es para el día actual
 if opcion_visualizacion == 'Día actual':
+    # Ordenar los datos cronológicamente
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
+    # Formatear la fecha para mostrar solo la hora
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
-    ax.set_xlabel('Hora')
-    x_ticks = datos_visualizacion['Hora'].iloc[::12]
-    ax.set_xticks(x_ticks)
+    plt.plot(datos_visualizacion['Hora'], datos_visualizacion[columna_seleccionada], color='#33FFD1', marker='o')  # Modificación visual: Color personalizado y marcador
+    plt.xlabel('Hora')  # Modificación visual: Etiqueta del eje X
+    # Ajustar las etiquetas del eje X para mostrar solo cada hora
+    x_ticks = datos_visualizacion['Hora'].iloc[::12]  # Cada 12*5 = 60 minutos = 1 hora
+    plt.xticks(rotation=45, ha='right')  # Modificación visual: Rotación y alineación de las etiquetas del eje X
+    plt.gca().set_xticks(x_ticks)  # Modificación visual: Establecer los ticks en el eje X
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
-    ax.set_xlabel('Fecha')
-    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
+    plt.plot(datos_visualizacion['Fecha'], datos_visualizacion[columna_seleccionada], color='#33FFD1', marker='o')  # Modificación visual: Color personalizado y marcador
+    plt.xlabel('Fecha')  # Modificación visual: Etiqueta del eje X
 
-ax.set_ylabel(columna_seleccionada)
-ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
-plt.xticks(rotation=45)
+plt.ylabel(columna_seleccionada)  # Modificación visual: Etiqueta del eje Y
+plt.title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}', color='#33FFD1', fontsize=16, fontweight='bold')  # Modificación visual: Título personalizado
+plt.yticks(color='#33FFD1')  # Modificación visual: Color de las etiquetas del eje Y
+plt.gca().spines['top'].set_visible(False)  # Modificación visual: Ocultar borde superior del gráfico
+plt.gca().spines['right'].set_visible(False)  # Modificación visual: Ocultar borde derecho del gráfico
+plt.gca().tick_params(axis='both', colors='#33FFD1')  # Modificación visual: Color de los ticks en ambos ejes
+
 plt.tight_layout()
 
 # Mostrar la gráfica en Streamlit
 st.pyplot(fig)
 
+# Descripción del proyecto
 st.markdown("""
 # Monitor de Mediciones
 Este proyecto muestra la evolución de las mediciones en diferentes períodos de tiempo. 
