@@ -40,7 +40,7 @@ if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     # Formatear la fecha para mostrar solo la hora
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, palette='muted', ax=ax)
+    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, palette='pastel', ax=ax)
     ax.set_xlabel('Hora')
     # Ajustar las etiquetas del eje X para mostrar solo cada hora
     x_ticks = datos_visualizacion['Hora'].iloc[::12]  # Cada 12*5 = 60 minutos = 1 hora
