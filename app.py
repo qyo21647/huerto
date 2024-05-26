@@ -53,6 +53,9 @@ with st.spinner('Cargando gráfico...'):
 
     fig, ax = plt.subplots()
 
+    # Establecer el estilo del gráfico
+    sns.set_style("darkgrid")
+
     # Verificar si la opción de visualización es para el día actual
     if opcion_visualizacion == 'Día actual':
         datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
