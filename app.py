@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 from datetime import datetime, timedelta
 
 from añadir_datos import obtener_datos
@@ -31,34 +31,29 @@ opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualizac
 datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
+st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
 fig, ax = plt.subplots()
-line, = ax.plot([], [], lw=2)
 
-# Función para inicializar la animación
-def init():
+# Verificar si la opción de visualización es para el día actual
+if opcion_visualizacion == 'Día actual':
+    datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
+    datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
+    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    ax.set_xlabel('Hora')
+    x_ticks = datos_visualizacion['Hora'].iloc[::12]
+    ax.set_xticks(x_ticks)
+else:
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Fecha')
-    ax.set_ylabel(columna_seleccionada)
-    ax.set_title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
-    ax.set_xlim(min(datos_visualizacion['Fecha']), max(datos_visualizacion['Fecha']))
-    ax.set_ylim(0, max(datos_visualizacion[columna_seleccionada]) + 1)
-    return line,
+    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
-# Función para actualizar la animación en cada cuadro
-def update(frame):
-    datos = datos_visualizacion.iloc[:frame+1]
-    line.set_data(datos['Fecha'], datos[columna_seleccionada])
-    return line,
+ax.set_ylabel(columna_seleccionada)
+ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
+plt.xticks(rotation=45)
+plt.tight_layout()
 
-# Ejecutar la animación
-ani = FuncAnimation(fig, update, frames=len(datos_visualizacion), init_func=init, blit=True)
-
-# Guardar la animación como un archivo de video
-video_file = "animation.mp4"
-ani.save(video_file)
-
-# Mostrar el video en Streamlit
-video_bytes = open(video_file, "rb").read()
-st.video(video_bytes)
+# Mostrar la gráfica en Streamlit
+st.pyplot(fig)
 
 # Descripción del proyecto
 st.markdown("""
