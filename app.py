@@ -80,10 +80,3 @@ with st.spinner('Cargando gráfico...'):
 
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
-
-# Descripción del proyecto
-st.markdown("""
-# Monitor de Mediciones
-Este proyecto muestra la evolución de las mediciones en diferentes períodos de tiempo. 
-Puedes seleccionar la columna de datos que deseas visualizar y el período de tiempo correspondiente.
-""")
