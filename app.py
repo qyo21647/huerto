@@ -19,10 +19,10 @@ nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 colores = {
     'Temperatura': 'red',
     'Humedad': 'blue',
-    'Intensidad de la luz': 'green',
+    'Intensidad de la luz': 'yellow',
     'Presión': 'orange',
-    'Dirección del viento': 'purple',
-    'Velocidad del viento': 'brown',
+    'Dirección del viento': 'brown',
+    'Velocidad del viento': '#bbfff4',
     'Lluvia a la hora': 'gray',
     'Índice UV': 'cyan'
 }
