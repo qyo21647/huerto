@@ -32,6 +32,10 @@ datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
+
+# Agregar un título más llamativo y colorido
+st.markdown("<h2 style='text-align: center; color: #3366ff;'>Monitor de Mediciones</h2>", unsafe_allow_html=True)
+
 fig, ax = plt.subplots()
 
 # Verificar si la opción de visualización es para el día actual
@@ -55,9 +59,8 @@ plt.tight_layout()
 # Mostrar la gráfica en Streamlit
 st.pyplot(fig)
 
-# Descripción del proyecto
+# Agregar una descripción más detallada del proyecto
 st.markdown("""
-# Monitor de Mediciones
-Este proyecto muestra la evolución de las mediciones en diferentes períodos de tiempo. 
-Puedes seleccionar la columna de datos que deseas visualizar y el período de tiempo correspondiente.
-""")
+## Descripción del Proyecto
+
+Este proyecto proporciona una herramienta interactiva para visualizar y analizar datos meteorológicos. Los usuarios pueden seleccionar diferentes columnas de datos y períodos de tiempo para generar gráficos personalizados. La aplicación también ofrece opciones de
