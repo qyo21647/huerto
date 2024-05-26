@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import time  # Para simular la carga
+import numpy as np  # Importar NumPy
 
 from añadir_datos import obtener_datos
 
