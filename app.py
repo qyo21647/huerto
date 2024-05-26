@@ -32,13 +32,13 @@ datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(10, 6))  # Ajustamos el tamaño de la figura
 
 # Verificar si la opción de visualización es para el día actual
 if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, hue='Fecha', data=datos_visualizacion, palette='viridis', ax=ax)
+    sns.lineplot(x='Hora', y=columna_seleccionada, hue='Fecha', data=datos_visualizacion, palette='viridis', ax=ax, legend=False)  # No mostramos la leyenda
     ax.set_xlabel('Hora')
     x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
