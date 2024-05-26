@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from datetime import datetime, timedelta
 
 from añadir_datos import obtener_datos
@@ -31,29 +31,28 @@ opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualizac
 datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
-st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
 fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2)
 
-# Verificar si la opción de visualización es para el día actual
-if opcion_visualizacion == 'Día actual':
-    # Ordenar los datos cronológicamente
-    datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
-    # Formatear la fecha para mostrar solo la hora
-    datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
-    ax.set_xlabel('Hora')
-    # Ajustar las etiquetas del eje X para mostrar solo cada hora
-    x_ticks = datos_visualizacion['Hora'].iloc[::12]  # Cada 12*5 = 60 minutos = 1 hora
-    ax.set_xticks(x_ticks)
-else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+# Función para inicializar la animación
+def init():
     ax.set_xlabel('Fecha')
+    ax.set_ylabel(columna_seleccionada)
+    ax.set_title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
+    ax.set_xlim(min(datos_visualizacion['Fecha']), max(datos_visualizacion['Fecha']))
+    ax.set_ylim(0, max(datos_visualizacion[columna_seleccionada]) + 1)
+    return line,
 
-ax.set_ylabel(columna_seleccionada)
-plt.xticks(rotation=45)
-plt.tight_layout()
+# Función para actualizar la animación en cada cuadro
+def update(frame):
+    datos = datos_visualizacion.iloc[:frame+1]
+    line.set_data(datos['Fecha'], datos[columna_seleccionada])
+    return line,
 
-# Mostrar la gráfica en Streamlit
+# Ejecutar la animación
+ani = FuncAnimation(fig, update, frames=len(datos_visualizacion), init_func=init, blit=True)
+
+# Mostrar la animación en Streamlit
 st.pyplot(fig)
 
 # Descripción del proyecto
