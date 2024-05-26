@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import time  # Para simular la carga
-import numpy as np  # Importar NumPy
+import numpy as np  # Para generar el gradiente de color
 
 from añadir_datos import obtener_datos
 
@@ -76,9 +76,9 @@ with st.spinner('Cargando gráfico...'):
     # Agregar leyenda
     plt.legend([columna_seleccionada])
 
-    # Añadir gradiente de color en función del eje Y
+    # Agregar gradiente de color en función del eje y
     gradient = np.linspace(0, 1, 256).reshape(1, -1)
-    ax.imshow([gradient], aspect='auto', cmap=plt.cm.Blues, extent=ax.get_ylim())
+    ax.imshow(gradient, aspect='auto', cmap=plt.cm.Blues, extent=ax.get_ylim())
 
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
