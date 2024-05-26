@@ -4,16 +4,18 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
-# Cargar los datos
-@st.cache
-def load_data():
-    df = pd.read_csv("tu_archivo.csv")
-    return df
+from añadir_datos import obtener_datos
 
-df_datos_completo = load_data()
+# Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
+obtener_datos()
+
+df_datos_completo = st.session_state['df_datos_completo']
+
+# Excluir la columna de fecha y obtener los nombres de las columnas restantes
+nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 
 # Opción para seleccionar qué columna graficar
-columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", df_datos_completo.columns)
+columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", nombres_columnas)
 
 # Opciones de visualización
 opciones_visualizacion = {
@@ -28,12 +30,6 @@ opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualizac
 # Obtener los datos para la opción seleccionada
 datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
-# Definir una paleta de colores basada en los valores de la columna seleccionada
-if datos_visualizacion[columna_seleccionada].dtype == 'object':
-    palette = 'Set1'  # Usar una paleta de colores categóricos para datos de tipo objeto
-else:
-    palette = 'viridis'  # Usar una paleta de colores continuos para otros tipos de datos
-
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
 fig, ax = plt.subplots()
@@ -42,12 +38,12 @@ fig, ax = plt.subplots()
 if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette=palette)
+    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Hora')
     x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette=palette)
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Fecha')
     ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
