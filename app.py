@@ -38,19 +38,12 @@ fig, ax = plt.subplots()
 if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    sns.lineplot(x='Hora', y=columna_seleccionada, hue='Fecha', data=datos_visualizacion, palette='viridis', ax=ax)
     ax.set_xlabel('Hora')
     x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette='viridis')
-
-    # Escalar la transparencia de la línea en función de los valores de los datos
-    min_value = datos_visualizacion[columna_seleccionada].min()
-    max_value = datos_visualizacion[columna_seleccionada].max()
-    alpha = (datos_visualizacion[columna_seleccionada] - min_value) / (max_value - min_value)
-    line_collection = ax.collections[0]
-    line_collection.set_alpha(alpha)
+    sns.lineplot(x='Fecha', y=columna_seleccionada, hue='Fecha', data=datos_visualizacion, palette='viridis', ax=ax)
 
     ax.set_xlabel('Fecha')
     ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
