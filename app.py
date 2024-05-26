@@ -9,8 +9,6 @@ from añadir_datos import obtener_datos
 # Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
 obtener_datos()
 
-st.set_option('theme.backgroundColor', '#d0ffbb')
-
 df_datos_completo = st.session_state['df_datos_completo']
 
 # Excluir la columna de fecha y obtener los nombres de las columnas restantes
