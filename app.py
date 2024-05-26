@@ -24,7 +24,7 @@ colores = {
     'Dirección del viento': '#b77f3f',
     'Velocidad del viento': '#aeaeae',
     'Lluvia a la hora': '#4173ee',
-    'Índice UV': '#7bb73f'
+    'Índice UV': '#a83cd3'
 }
 
 # Opción para seleccionar qué columna graficar
