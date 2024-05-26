@@ -20,7 +20,7 @@ colores = {
     'Temperatura': '#ee8341',
     'Humedad': '#bbfff4',
     'Intensidad de la luz': '#f5f560',
-    'Presión': '#d33c3c',
+    'Presión': '#67d33c',
     'Dirección del viento': '#b77f3f',
     'Velocidad del viento': '#aeaeae',
     'Lluvia a la hora': '#4173ee',
