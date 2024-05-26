@@ -47,7 +47,7 @@ datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 st.title("Estación Meteorológica")
 
 # Crear la gráfica
-st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
+st.header(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
 
 # Añadir animación de carga
 with st.spinner('Cargando gráfico...'):
