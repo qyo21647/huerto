@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+import time  # Para simular la carga
 
 from añadir_datos import obtener_datos
 
@@ -13,6 +14,18 @@ df_datos_completo = st.session_state['df_datos_completo']
 
 # Excluir la columna de fecha y obtener los nombres de las columnas restantes
 nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
+
+# Definir colores para cada tipo de dato
+colores = {
+    'Temperatura': 'red',
+    'Humedad': 'blue',
+    'Intensidad de la luz': 'green',
+    'Presión': 'orange',
+    'Dirección del viento': 'purple',
+    'Velocidad del viento': 'brown',
+    'Lluvia a la hora': 'gray',
+    'Índice UV': 'cyan'
+}
 
 # Opción para seleccionar qué columna graficar
 columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", nombres_columnas)
@@ -32,29 +45,50 @@ datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
-fig, ax = plt.subplots(figsize=(10, 6))  # Ajustamos el tamaño de la figura
 
-# Verificar si la opción de visualización es para el día actual
-if opcion_visualizacion == 'Día actual':
-    datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
-    datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, hue='Fecha', data=datos_visualizacion, palette='viridis', ax=ax, legend=False)  # No mostramos la leyenda
-    ax.set_xlabel('Hora')
-    x_ticks = datos_visualizacion['Hora'].iloc[::12]
-    ax.set_xticks(x_ticks)
-else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, hue='Fecha', data=datos_visualizacion, palette='viridis', ax=ax)
+# Añadir animación de carga
+with st.spinner('Cargando gráfico...'):
+    # Simular una carga
+    time.sleep(2)
 
-    ax.set_xlabel('Fecha')
-    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
+    fig, ax = plt.subplots()
 
-ax.set_ylabel(columna_seleccionada)
-ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
-plt.xticks(rotation=45)
-plt.tight_layout()
+    # Verificar si la opción de visualización es para el día actual
+    if opcion_visualizacion == 'Día actual':
+        datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
+        datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
+        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
+        ax.set_xlabel('Hora')
+        x_ticks = datos_visualizacion['Hora'].iloc[::12]
+        ax.set_xticks(x_ticks)
+    else:
+        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
+        ax.set_xlabel('Fecha')
+        ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
-# Mostrar la gráfica en Streamlit
-st.pyplot(fig)
+    # Obtener los valores mínimo y máximo del eje Y
+    y_min = datos_visualizacion[columna_seleccionada].min()
+    y_max = datos_visualizacion[columna_seleccionada].max()
+
+    # Crear el gradiente
+    cmap = plt.get_cmap('viridis')
+    colors = cmap(np.linspace(0, 1, 100))
+    gradient = np.tile(np.linspace(y_min, y_max, 100), (1, 1)).T
+
+    # Dibujar el gradiente
+    ax.imshow(gradient, aspect='auto', cmap=cmap, extent=(ax.get_xlim()[0], ax.get_xlim()[1], y_min, y_max))
+
+    ax.set_ylabel(columna_seleccionada)
+    ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
+    plt.xticks(rotation=45)
+    plt.grid(True)  # Añadir líneas de cuadrícula
+    plt.tight_layout()
+
+    # Agregar leyenda
+    plt.legend([columna_seleccionada])
+
+    # Mostrar la gráfica en Streamlit
+    st.pyplot(fig)
 
 # Descripción del proyecto
 st.markdown("""
