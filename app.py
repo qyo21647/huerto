@@ -36,19 +36,20 @@ fig, ax = plt.subplots()
 
 # Verificar si la opción de visualización es para el día actual
 if opcion_visualizacion == 'Día actual':
+    # Ordenar los datos cronológicamente
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
+    # Formatear la fecha para mostrar solo la hora
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
     sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Hora')
-    x_ticks = datos_visualizacion['Hora'].iloc[::12]
+    # Ajustar las etiquetas del eje X para mostrar solo cada hora
+    x_ticks = datos_visualizacion['Hora'].iloc[::12]  # Cada 12*5 = 60 minutos = 1 hora
     ax.set_xticks(x_ticks)
 else:
     sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Fecha')
-    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
 ax.set_ylabel(columna_seleccionada)
-ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
 plt.xticks(rotation=45)
 plt.tight_layout()
 
