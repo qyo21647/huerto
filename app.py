@@ -3,23 +3,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-import time
 
 from añadir_datos import obtener_datos
 
-# Función para cargar datos con animación de carga
-def cargar_datos():
-    with st.spinner('Cargando datos...'):
-        # Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
-        obtener_datos()
-        # Simulación de carga de datos (aquí podrías cargar tus datos reales)
-        time.sleep(3)
-    st.success('¡Datos cargados correctamente!')
+# Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
+obtener_datos()
 
-# Llamada a la función para cargar los datos
-cargar_datos()
-
-# Obtener los datos actualizados
 df_datos_completo = st.session_state['df_datos_completo']
 
 # Excluir la columna de fecha y obtener los nombres de las columnas restantes
@@ -51,13 +40,15 @@ if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     # Formatear la fecha para mostrar solo la hora
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax,
+                 linestyle='dashed')  # Cambiar el estilo de la línea a discontinuo
     ax.set_xlabel('Hora')
     # Ajustar las etiquetas del eje X para mostrar solo cada hora
     x_ticks = datos_visualizacion['Hora'].iloc[::12]  # Cada 12*5 = 60 minutos = 1 hora
     ax.set_xticks(x_ticks)
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax,
+                 linestyle='dashed')  # Cambiar el estilo de la línea a discontinuo
     ax.set_xlabel('Fecha')
 
 ax.set_ylabel(columna_seleccionada)
