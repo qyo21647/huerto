@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import subprocess
 
-plt.style.use('seaborn-darkgrid')
-
+plt.style.use('ggplot')
 
 # Ejecutar añadir_datos.py
 subprocess.run(["python", "añadir_datos.py"]) #este .py añade los datos nuevos al CSV
