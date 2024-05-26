@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-import time  # Para simular la carga
+import time
 
 from añadir_datos import obtener_datos
 
@@ -74,9 +74,6 @@ with st.spinner('Cargando gráfico...'):
     plt.xticks(rotation=45)
     plt.grid(True)  # Añadir líneas de cuadrícula
     plt.tight_layout()
-
-    # Agregar leyenda
-    plt.legend([columna_seleccionada])
 
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
