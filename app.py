@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
 from datetime import datetime, timedelta
 import time  # Para simular la carga
 
@@ -17,14 +18,14 @@ nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 
 # Definir colores para cada tipo de dato
 colores = {
-    'Temperatura': 'red',
-    'Humedad': 'blue',
-    'Intensidad de la luz': 'green',
-    'Presión': 'orange',
-    'Dirección del viento': 'purple',
-    'Velocidad del viento': 'brown',
+    'Temperatura': 'Reds',
+    'Humedad': 'Blues',
+    'Intensidad de la luz': 'Greens',
+    'Presión': 'Oranges',
+    'Dirección del viento': 'Purples',
+    'Velocidad del viento': 'copper',
     'Lluvia a la hora': 'gray',
-    'Índice UV': 'cyan'
+    'Índice UV': 'cividis'
 }
 
 # Opción para seleccionar qué columna graficar
@@ -57,12 +58,12 @@ with st.spinner('Cargando gráfico...'):
     if opcion_visualizacion == 'Día actual':
         datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
         datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
+        sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette=colores[columna_seleccionada])
         ax.set_xlabel('Hora')
         x_ticks = datos_visualizacion['Hora'].iloc[::12]
         ax.set_xticks(x_ticks)
     else:
-        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=colores[columna_seleccionada])
+        sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, palette=colores[columna_seleccionada])
         ax.set_xlabel('Fecha')
         ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
@@ -71,6 +72,9 @@ with st.spinner('Cargando gráfico...'):
     plt.xticks(rotation=45)
     plt.grid(True)  # Añadir líneas de cuadrícula
     plt.tight_layout()
+
+    # Agregar leyenda
+    plt.legend([columna_seleccionada])
 
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
