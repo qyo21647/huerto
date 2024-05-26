@@ -4,6 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
+from añadir_datos import obtener_datos
+
 # Ejecutar la función obtener_datos para actualizar los datos y guardarlos en session_state
 obtener_datos()
 
@@ -14,12 +16,6 @@ nombres_columnas = [col for col in df_datos_completo.columns if col != 'Fecha']
 
 # Opción para seleccionar qué columna graficar
 columna_seleccionada = st.sidebar.selectbox("Selecciona la columna para graficar:", nombres_columnas)
-
-# Definir una paleta de colores personalizada para cada tipo de medición
-paleta_colores = sns.color_palette("husl", n_colors=len(nombres_columnas))
-
-# Mapear cada tipo de medición con su respectivo color
-mapeo_colores = dict(zip(nombres_columnas, paleta_colores))
 
 # Opciones de visualización
 opciones_visualizacion = {
@@ -34,6 +30,9 @@ opcion_visualizacion = st.sidebar.selectbox("Selecciona la opción de visualizac
 # Obtener los datos para la opción seleccionada
 datos_visualizacion = opciones_visualizacion[opcion_visualizacion]
 
+# Crear una paleta de colores personalizada para cada tipo de medición
+colores = sns.color_palette("husl", len(nombres_columnas))
+
 # Crear la gráfica
 st.title(f'Gráfico de {columna_seleccionada} - {opcion_visualizacion}')
 fig, ax = plt.subplots()
@@ -42,12 +41,14 @@ fig, ax = plt.subplots()
 if opcion_visualizacion == 'Día actual':
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
-    sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=mapeo_colores[columna_seleccionada])
+    for i, col in enumerate(nombres_columnas):
+        sns.lineplot(x='Hora', y=col, data=datos_visualizacion, ax=ax, color=colores[i], label=col)
     ax.set_xlabel('Hora')
     x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
 else:
-    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax, color=mapeo_colores[columna_seleccionada])
+    for i, col in enumerate(nombres_columnas):
+        sns.lineplot(x='Fecha', y=col, data=datos_visualizacion, ax=ax, color=colores[i], label=col)
     ax.set_xlabel('Fecha')
     ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
@@ -55,6 +56,7 @@ ax.set_ylabel(columna_seleccionada)
 ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
 plt.xticks(rotation=45)
 plt.tight_layout()
+plt.legend()  # Agregar leyenda
 
 # Mostrar la gráfica en Streamlit
 st.pyplot(fig)
