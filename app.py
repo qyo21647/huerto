@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import subprocess
 
-st.title("Estación meteorológica")
+st.title("Estación Meteorológica", height=50, color="blue", align="center", font_weight="bold", font_style="italic", font_family="Arial")
 
 # Usar seaborn para el estilo
 sns.set(style="darkgrid")
