@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
-import numpy as np
 
 from añadir_datos import obtener_datos
 
@@ -36,34 +36,19 @@ fig, ax = plt.subplots()
 
 # Verificar si la opción de visualización es para el día actual
 if opcion_visualizacion == 'Día actual':
-    # Ordenar los datos cronológicamente
     datos_visualizacion = datos_visualizacion.sort_values(by='Fecha')
-    # Formatear la fecha para mostrar solo la hora
     datos_visualizacion['Hora'] = datos_visualizacion['Fecha'].dt.strftime('%H:%M')
     sns.lineplot(x='Hora', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
     ax.set_xlabel('Hora')
-    # Ajustar las etiquetas del eje X para mostrar solo cada hora
-    x_ticks = datos_visualizacion['Hora'].iloc[::12]  # Cada 12*5 = 60 minutos = 1 hora
+    x_ticks = datos_visualizacion['Hora'].iloc[::12]
     ax.set_xticks(x_ticks)
 else:
-    # Implementación de visualización con colores cambiantes
-    x = np.arange(len(datos_visualizacion))
-    y = datos_visualizacion[columna_seleccionada]
-    dydx = np.gradient(y)
-
-    # Create a set of line segments
-    points = np.array([x, y]).T.reshape(-1, 1, 2)
-    segments = np.concatenate([points[:-1], points[1:]], axis=1)
-
-    # Create a continuous norm to map from data points to colors
-    norm = plt.Normalize(dydx.min(), dydx.max())
-    cmap = plt.get_cmap('viridis')
-    lc = LineCollection(segments, cmap=cmap, norm=norm)
-    lc.set_array(dydx)
-    lc.set_linewidth(2)
-    ax.add_collection(lc)
+    sns.lineplot(x='Fecha', y=columna_seleccionada, data=datos_visualizacion, ax=ax)
+    ax.set_xlabel('Fecha')
+    ax.xaxis.set_major_locator(plt.MaxNLocator(10))  # Ajustar para mostrar máximo 10 etiquetas
 
 ax.set_ylabel(columna_seleccionada)
+ax.set_title(f'{columna_seleccionada} a lo largo de {opcion_visualizacion}')
 plt.xticks(rotation=45)
 plt.tight_layout()
 
